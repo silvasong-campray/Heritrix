@@ -1,6 +1,6 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.com.product">
-	<class name="napProduct">
+	<class name="NapProduct">
 		<id name="id">
 			<generator class="native"></generator>
 		</id>
@@ -12,6 +12,7 @@
 		<property name="url"></property>
 		<property name="image" length="1000"></property>
 		<property name="description" length="1000"></property>
+		<property name="createtime" type="java.lang.Lang"></property>
 		
 	</class>
 

@@ -2,10 +2,10 @@ package org.com.product;
 
 /**
  * @author silvasong E-mail:silvasong@campray.com
- * @version ´´½¨Ê±¼ä£º2015Äê1ÔÂ12ÈÕ ÏÂÎç1:25:41
+ * @version ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä£º2015ï¿½ï¿½1ï¿½ï¿½12ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½1:25:41
  * 
  */
-public class napProduct {
+public class NapProduct {
 	
     private int id;
 	
@@ -13,7 +13,7 @@ public class napProduct {
 	
 	private String name;
 	
-	private String price;
+	private float price;
 	
 	private String brand;
 	
@@ -25,6 +25,17 @@ public class napProduct {
 	
 	private String description;
 	
+	private Long createtime;
+	
+	
+	public Long getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(Long createtime) {
+		this.createtime = createtime;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -49,11 +60,11 @@ public class napProduct {
 		this.name = name;
 	}
 
-	public String getPrice() {
+	public float getPrice() {
 		return price;
 	}
 
-	public void setPrice(String price) {
+	public void setPrice(float price) {
 		this.price = price;
 	}
 

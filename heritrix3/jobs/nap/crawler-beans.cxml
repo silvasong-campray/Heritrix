@@ -53,7 +53,7 @@ metadata.description=test
    <props>
     <prop key="seeds.textSource.value">
     # URLS HERE
-    http://www.net-a-porter.com/
+    http://www.net-a-porter.com/Shop/Clothing
 
     </prop>
    </props>
@@ -136,7 +136,7 @@ metadata.description=test
     </bean>
     <!-- ...but REJECT those more than a configured link-hop-count from start... -->
     <bean class="org.archive.modules.deciderules.TooManyHopsDecideRule">
-       <property name="maxHops" value="5" />  
+       <property name="maxHops" value="10" />  
     </bean>
     <!-- ...but ACCEPT those more than a configured link-hop-count from start... -->
     <bean class="org.archive.modules.deciderules.TransclusionDecideRule">
@@ -161,8 +161,8 @@ metadata.description=test
          <property name="regexList">
           <list>
               <value>http://www.net-a-porter.com/</value>
-              <value>http://www.net-a-porter.com/(Shop|product)(?!.*?designerFilter).*([^\.js|\.png|\.JPG|\.css|\.gif|\.start|\.mp4|\a.top\-nav\-link])$</value>
-              <value>/(Shop|product)(?!.*?designerFilter).*([^\.js|\.png|\.JPG|\.css|\.gif|\.start|\.mp4|\a.top\-nav\-link])$</value>
+              <value>http://www.net-a-porter.com/(Shop|product)(?!.*?(designerFilter|colourFilter)).*([^\.js|\.png|\.JPG|\.css|\.gif|\.start|\.mp4|\a.top\-nav\-link])$</value>
+              <value>/(Shop|product)(?!.*?(designerFilter|colourFilter)).*([^\.js|\.png|\.JPG|\.css|\.gif|\.start|\.mp4|\a.top\-nav\-link])$</value>
             </list>
           </property>
     </bean>

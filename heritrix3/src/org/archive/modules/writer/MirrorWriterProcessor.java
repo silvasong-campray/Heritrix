@@ -53,7 +53,7 @@ import org.archive.net.UURI;
 import org.archive.util.FileUtils;
 import org.com.product.HibernateBase;
 import org.com.product.HtmlAnalysis;
-import org.com.product.Product;
+import org.com.product.SuProduct;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -104,7 +104,7 @@ public class MirrorWriterProcessor extends Processor {
 	private static String cityId = "9051";
 	private static String clientType = "1";
     private static Session s;
-    private static Product product;
+    private static SuProduct product;
 	private static SessionFactory sf=HibernateBase.getSessionFactory();
     private static final long serialVersionUID = 3L;
     private static final Logger logger =
@@ -359,22 +359,16 @@ public class MirrorWriterProcessor extends Processor {
     
     @Override
     protected void innerProcess(CrawlURI curi) {
+    	
        UURI uuri = curi.getUURI(); // Current URI.
-      String uri=uuri.toString();
-      logger.info(uuri.toString());
-      
-      /*  if(!(uri.contains("http://www.suning.com/emall/cprd_")||Pattern.compile("http\\://product\\.suning\\.com/\\d{10}/\\d{9}.html.*|http\\://product\\.suning\\.com/\\d{9}.html.*").matcher(uri).find())){
-        	return;
-       }
-       */
-       /*if(!(uri.contains("http://www.net-a-porter.com/product/"))){
-  	      return;
-        }
-        if(HtmlAnalysis.findByPid(uri.split("/")[4].substring(0,6))>0){
-    	   return;
-        }*/
-        
-        
+       String uri=uuri.toString();
+     
+       logger.info(uuri.toString());
+       /* if(uri.contains("http://www.suning.com/emall/cprd_")||Pattern.compile("http\\://product\\.suning\\.com/\\d{10}/\\d{9}.html.*|http\\://product\\.suning\\.com/\\d{9}.html.*").matcher(uri).find()){
+        	logger.info(uuri.toString());
+       }*/
+       
+    
         // Only http and https schemes are supported.
         
         /*String scheme = uuri.getScheme();

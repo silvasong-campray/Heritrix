@@ -42,7 +42,7 @@ public class  HtmlAnalysis{
     public static int findByPid(String pid)
    {
 	   s=sf.openSession();
-	   String hql="from napProduct as nap where nap.pid=:pid";//使用命名参数，推荐使用，易读。
+	   String hql="from NapProduct as nap where nap.pid=:pid";
 	   Query query=s.createQuery(hql);
 	   query.setString("pid", pid);
 	   int count = query.list().size();
@@ -50,109 +50,8 @@ public class  HtmlAnalysis{
 	   return count;
        
    }
-    /*
-	public static void getProductInfo(String uri) throws JSONException, IOException {
-		// TODO Auto-generated method stub
-		JSONObject price,category;
-		Elements elements;
-		String p1;
-		Product product=new Product();
-		String param = "";
-		String vendor = "0000000000";
-		String storeId="";
-		String catalogId="";
-		String partNumber="";
-		String imageLink="";
-		
-		
-		Document doc= Jsoup.connect(uri).timeout(10000).get();
-		
-		
-		
-		// 提取产品价格
-		elements = doc.getElementsByTag("head");
-		String script = elements.toString();
-		int a = script.indexOf("storeId");
-		int b = script.indexOf("catalogId");
-		int c = script.indexOf("partNumber");
-		int d = script.indexOf("vendorCode");
-
-		storeId = script.substring(a + 10, a + 15);
-		catalogId = script.substring(b + 12, b + 17);
-		partNumber = script.substring(c + 13, c + 31);
-		
-		if (script.substring(d + 14, d + 16).equals("00")) {
-			vendor=script.substring(d + 14, d + 24);
-			param = "http://product.suning.com/SNProductStatusView?"
-					+ "storeId=" + storeId + "&catalogId=" + catalogId
-					+ "&partNumber=" + partNumber + "&vendorCode=" + vendor
-					+ "&cityId=9051&clientType=1";
-		} else {
-			param = "http://product.suning.com/SNProductStatusView?"
-					+ "storeId=" + storeId + "&catalogId=" + catalogId
-					+ "&partNumber=" + partNumber + "&vendor=" + vendor
-					+ "&cityId=9051&clientType=1";
-		}
-		
-		
-		
-
-		
-		elements = doc.getElementsByClass("product-main-title");
-		product.setProductName(elements.text());
-		
-		org.jsoup.nodes.Element productInfo= doc.getElementById("canshu_box");
-		category=new JSONObject(script.substring(script.indexOf("{",script.indexOf("snqa")),script.indexOf("}",script.indexOf("snqa"))+1 ));
-		
-		product.setProductCatagory(category.getString("categoryName1")+"/"+category.getString("categoryName2")+"/"+category.getString("categoryName3"));
-		
-		//提取商家信息
-		org.jsoup.nodes.Element vendorInfo=doc.getElementById("curShopName");
-		if(vendorInfo!=null){
-			product.setVendorName(vendorInfo.text());
-		}
-		else{
-			product.setVendorName("苏宁自营");
-		}
-		// 提取产品参数
-		if (productInfo != null) {
-			
-			product.setProductInfo(productInfo.text().replaceAll("纠错", " "));
-		}
-		else{
-			return;
-		}
-		// 提取产品价格
-				Document doc1 = Jsoup.connect(param).timeout(10000).get();
-				if((p1=doc1.text()).startsWith("{")){
-				price = new JSONObject(p1);
-				if(price.getString("promotionPrice").equals("")&&price.getString("netPrice").equals("")){
-					return;
-				}
-				product.setPromotionPrice(price.getString("promotionPrice"));
-			    product.setNetPrice(price.getString("netPrice"));
-				}
-				else{
-					return;
-				}
-		
-		//提取产品图片链接
-		org.jsoup.nodes.Element productImage= doc.getElementById("preView_box");
-		for(int i=0;i<productImage.select("img").size();i++){
-		imageLink+=productImage.select("img").get(i).attr("src")+"#";
-		};
-		product.setProductLink(uri);
-		product.setProductImage(imageLink);
-		product.setStoreId(storeId);
-		product.setCatalogId(catalogId);
-		product.setPartNumber(partNumber);
-		product.setVendor(vendor);
-		//持久化数据
-		dataPersistence(product);
-		 
-		
-	}*/
-public static void getProductInfo(String uri) throws IOException, JSONException {
+    
+public static void getProductInfo(String html,String url) throws IOException, JSONException {
 	// TODO Auto-generated method stub
 	JSONObject jsonObject;
 	Element element;
@@ -168,25 +67,79 @@ public static void getProductInfo(String uri) throws IOException, JSONException 
 	String promotionPrice="";
 	String netPrice="";
 	String productCatagory="";
-	if(uri.contains("http://www.suning.com/emall/cprd_")){
-		vendor=uri.split("_")[3];
-		}else if(Pattern.compile("http\\://product\\.suning\\.com/\\d{10}/\\d{9}.html.*").matcher(uri).find()){
+	//
+	Document productInfo = Jsoup.parse(html);
+	if(url.contains("http://www.suning.com/emall/cprd_")){
+		vendor=url.split("_")[3];
+	
+		element = productInfo.getElementById("productInfoUl");
+		 partNumber="000000000"+element.getElementsByTag("li").get(0).text().replaceAll("鍟嗗搧缂栫爜", "").trim();
+		//name
+        Elements elements = productInfo.getElementsByClass("product-main-title");
+		productName=elements.text();
+		//vendor
+		element=productInfo.getElementById("curShopName");
+		if(element!=null){
+		shopName=element.text();
+		}
+		//params
+		element=productInfo.getElementById("canshu_box");
+		if (element != null) {
+            productParam=element.text().replaceAll("绾犻敊", " ");
+		}
+		//category
+		element = productInfo.getElementById("crumbs");
+		String str[]=element.text().split(">");
+		productCatagory=str[1]+">"+str[2]+">"+str[3];
+				
+		//images
+		element=productInfo.getElementById("preView_box");  
+		for(int i=0;i<element.select("img").size();i++){
+		imageLink+=element.select("img").get(i).attr("src")+"#";
+		}
+		
+		}else if(Pattern.compile("http\\://product\\.suning\\.com/\\d{10}/\\d{9}.html.*").matcher(url).find()){
 		index=0;
 		for(int i=0;i<3;i++)
 		{
-			index=uri.indexOf("/", index);
+			index=url.indexOf("/", index);
 			index++;
 		}
-		vendor=uri.substring(index, index+10);
-		//partNumber="000000000"+uri.substring(index+11,index+20);
+		vendor=url.substring(index, index+10);
+		partNumber="000000000"+url.substring(index+11,index+20);
+		Document Vender = Jsoup.connect("http://product.suning.com/emall/csl_10052_10051_00000000_"+partNumber+"_9051_.html").timeout(10000).get();
+		if(Vender.text().startsWith("{")){
+			jsonObject=new JSONObject(Vender.text());
+			shopName=jsonObject.getJSONArray("shopList").getJSONObject(0).getString("shopName");
+		}
+		//浜у搧鍚嶅瓧
+		Elements elements = productInfo.getElementsByClass("proinfo-title");
+		productName=elements.get(0).child(0).text();
+				
+		//浜у搧鍙傛暟
+		element=productInfo.getElementById("itemParameter");
+		if (element != null) {
+			productParam=element.text().replaceAll("绾犻敊", " ");
+		}
+				
+		//浜у搧鍒嗙被
+		elements = productInfo.getElementsByClass("breadcrumb");
+		productCatagory=elements.get(0).children().get(2).text()+">"+elements.get(0).children().get(4).text()+">"+elements.get(0).children().get(6).children().get(0).text();
+				
+		//浜у搧鍥剧墖
+		elements=productInfo.getElementsByClass("imgzoom-thumb-main");  
+		for(int i=0;i<elements.select("img").size();i++){
+			imageLink += elements.select("img").get(i).attr("src-medium")+"#";
+		}
+		
 	}else{
 		index=0;
 		for(int i=0;i<3;i++)
 		{
-			index=uri.indexOf("/", index);
+			index=url.indexOf("/", index);
 			index++;
 		}
-		partNumber="000000000"+uri.substring(index,index+9);
+		partNumber="000000000"+url.substring(index,index+9);
 		Document Vender = Jsoup.connect("http://product.suning.com/emall/csl_10052_10051_00000000_"+partNumber+"_9051_.html").timeout(10000).get();
 		if(Vender.text().startsWith("{")){
 			jsonObject=new JSONObject(Vender.text());
@@ -196,39 +149,39 @@ public static void getProductInfo(String uri) throws IOException, JSONException 
 			}
 			shopName=jsonObject.getJSONArray("shopList").getJSONObject(0).getString("shopName");
 		}
+		//浜у搧鍚嶇О
+		Elements elements = productInfo.getElementsByClass("proinfo-title");
+		productName=elements.get(0).child(0).text();
+		
+		
+		//浜у搧鍙傛暟
+		element=productInfo.getElementById("itemParameter");
+		if (element != null) {
+			 productParam=element.text().replaceAll("绾犻敊", " ");
+		}else{
+			return;
+		}
+		
+		//浜у搧鍒嗙被
+		 elements = productInfo.getElementsByClass("breadcrumb");
+		 productCatagory=elements.get(0).children().get(2).text()+">"+elements.get(0).children().get(4).text()+">"+elements.get(0).children().get(6).children().get(0).text();
+		
+		  //浜у搧鍥剧墖
+		elements=productInfo.getElementsByClass("imgzoom-thumb-main");  
+		for(int i=0;i<elements.select("img").size();i++){
+			imageLink += elements.select("img").get(i).attr("src-medium")+"#";
+		}
+		
+	}
+	if(productCatagory.equals(">>閭垂")){
+		return;
+	}
+	if(productParam.equals("")){
+		return;
 	}
 	
-	//获取产品基础信息
-	Document productInfo = Jsoup.connect(uri).timeout(10000).get();
-	   //产品编号
-	element = productInfo.getElementById("productInfoUl");
-	partNumber="000000000"+element.getElementsByTag("li").get(0).text().replaceAll("商品编码", "").trim();
-	   //产品名称
-	Elements elements = productInfo.getElementsByClass("product-main-title");
-	productName=elements.text();
-	   //产品店铺名称
-	element=productInfo.getElementById("curShopName");
-	if(element!=null){
-		shopName=element.text();
-	}
-    //产品参数
-	element=productInfo.getElementById("canshu_box");
-	if (element != null) {
-		productParam=element.text().replaceAll("纠错", " ");
-	}
-	else{
-		return;
-	} 
-	   //产品类别
-	element = productInfo.getElementById("crumbs");
-	productCatagory=element.text().split(">")[3];
-	  //产品图片
-	element=productInfo.getElementById("preView_box");  
-	for(int i=0;i<element.select("img").size();i++){
-		imageLink+=element.select("img").get(i).attr("src")+"#";
-		}
-	  
-	// 提取产品价格
+	
+	// 浜у搧浠锋牸
 	String param;
 	if (vendor.equals("0000000000")) {
 		param = "http://www.suning.com/emall/SNProductStatusView?"
@@ -250,26 +203,31 @@ public static void getProductInfo(String uri) throws IOException, JSONException 
 		  return;
 	    }
 	    promotionPrice = jsonObject.getString("promotionPrice");
-	    netPrice=jsonObject.getString("netPrice");
+	    
+	    netPrice=jsonObject.getString("refPrice");
+	    if(netPrice.isEmpty()||netPrice.equals("")){
+	    	netPrice=jsonObject.getString("netPrice");
+	    }
 	    
 	}
 	else{
 		return;
 	}
 	
-	Product product=new Product();
+	SuProduct product=new SuProduct();
 	product.setProductCatagory(productCatagory);
 	product.setPartNumber(partNumber);
 	product.setStoreId(storeId);
 	product.setCatalogId(catalogId);
-	product.setProductLink(uri);
-	product.setPromotionPrice(promotionPrice);
-	product.setNetPrice(netPrice);
+	product.setProductLink(url);
+	product.setPromotionPrice(Float.parseFloat(promotionPrice));
+	product.setNetPrice(Float.parseFloat(netPrice));
 	product.setProductImage(imageLink);
 	product.setVendor(vendor);
 	product.setVendorName(shopName);
 	product.setProductName(productName);
 	product.setProductParam(productParam);
+	product.setCreatetime(System.currentTimeMillis());
 	dataPersistence(product);
 	
 }
@@ -308,16 +266,17 @@ public static void getNapProduct(String html,String url) throws IOException{
 			image+=images.get(i).attr("content")+"#";
 		}
 		
-		napProduct nPro = new napProduct();
+		NapProduct nPro = new NapProduct();
 		
 		nPro.setBrand(brand);
 		nPro.setPid(pid);
 		nPro.setName(name);
-		nPro.setPrice(price);
+		nPro.setPrice(Float.parseFloat(price.replace("USD", "")));
 		nPro.setImage(image);
 		nPro.setDescription(description);
 		nPro.setUrl(url);
 		nPro.setCategory(category);
+		nPro.setCreatetime(System.currentTimeMillis());
 		dataPersistence(nPro);
 }
 

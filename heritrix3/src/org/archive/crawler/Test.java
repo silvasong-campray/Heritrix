@@ -18,7 +18,7 @@ public class Test {
 		String image = "";
 		try {
 			Document page = Jsoup.connect("http://www.net-a-porter.com/product/517379/Toga/-").timeout(10000).get();
-			element = page.getElementById("product-details");
+			/*element = page.getElementById("product-details");
 			element.attr("data-pid");
 			element.attr("data-name");
 			element.attr("data-price");
@@ -41,7 +41,9 @@ public class Test {
 			}
 			System.out.println(image);
 			
-			System.out.println("http://www.net-a-porter.com/product/517379?Toga/".split("/")[4].substring(0, 6));
+			System.out.println("http://www.net-a-porter.com/product/517379?Toga/".split("/")[4].substring(0, 6));*/
+			
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

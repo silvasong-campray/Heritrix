@@ -1,12 +1,12 @@
 package org.com.product;
 
-public class Product {
+public class SuProduct {
 	private int id;
 	private String partNumber;
 	private String productName;
 	private String productLink;
-	private String promotionPrice;
-	private String netPrice;
+	private float promotionPrice;
+	private float netPrice;
 	private String vendorName;
 	private String productCatagory;
 	private String productParam;
@@ -15,7 +15,18 @@ public class Product {
 	private String catalogId;
 	private String vendor ;
 	
-	public Product(){};
+    private Long createtime;
+	
+	
+	public Long getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(Long createtime) {
+		this.createtime = createtime;
+	}
+	
+	public SuProduct(){};
 	
 	
 	public int getId() {
@@ -44,19 +55,19 @@ public class Product {
 		this.productName = productName;
 	}
 
-	public String getPromotionPrice() {
+	public float getPromotionPrice() {
 		return promotionPrice;
 	}
 
-	public void setPromotionPrice(String promotionPrice) {
+	public void setPromotionPrice(float promotionPrice) {
 		this.promotionPrice = promotionPrice;
 	}
 
-	public String getNetPrice() {
+	public float getNetPrice() {
 		return netPrice;
 	}
 
-	public void setNetPrice(String netPrice) {
+	public void setNetPrice(float netPrice) {
 		this.netPrice = netPrice;
 	}
 

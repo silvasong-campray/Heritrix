@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.httpclient.URIException;
 import org.archive.io.ReplayCharSequence;
@@ -40,6 +41,7 @@ import org.archive.util.DevUtils;
 import org.archive.util.TextUtils;
 import org.archive.util.UriUtils;
 import org.com.product.HtmlAnalysis;
+import org.json.JSONException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -690,8 +692,15 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
         try {
            ReplayCharSequence cs = curi.getRecorder().getContentReplayCharSequence();
            
+           
+           
+           
            //Ertract product infomation
            String url = curi.toString();
+           /*if(url.contains("http://www.suning.com/emall/cprd_")||Pattern.compile("http\\://product\\.suning\\.com/\\d{10}/\\d{9}.html.*|http\\://product\\.suning\\.com/\\d{9}.html.*").matcher(url).find()){
+        	   extractInformation(cs.toString(),url);
+           }*/
+           
            if(url.contains("http://www.net-a-porter.com/product/")&& HtmlAnalysis.findByPid(url.split("/")[4].substring(0,6))==0){
         	   extractInformation(cs.toString(),url);
            }
@@ -964,6 +973,7 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
     public void extractInformation(String html,String url){
     	 try {
  			HtmlAnalysis.getNapProduct(html,url);
+    		// HtmlAnalysis.getProductInfo(html, url);
  		} catch (IOException e) {
  			// TODO Auto-generated catch block
  			e.printStackTrace();
