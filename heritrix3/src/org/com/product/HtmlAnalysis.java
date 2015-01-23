@@ -228,6 +228,7 @@ public static void getProductInfo(String html,String url) throws IOException, JS
 	product.setProductName(productName);
 	product.setProductParam(productParam);
 	product.setCreatetime(System.currentTimeMillis());
+	product.setDisPrice(Float.parseFloat(promotionPrice)-Float.parseFloat(netPrice));
 	dataPersistence(product);
 	
 }

@@ -9,6 +9,7 @@
 		<property name="productLink"></property>
 		<property name="promotionPrice"></property>
 		<property name="netPrice"></property>
+		<property name="disPrice"></property>
 		<property name="vendorName"></property>
 		<property name="productCatagory"></property>
 		<property name="productParam" length="2000"></property>
