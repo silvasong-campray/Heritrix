@@ -12,7 +12,7 @@
 		<property name="url"></property>
 		<property name="image" length="1000"></property>
 		<property name="description" length="1000"></property>
-		<property name="createtime" type="java.lang.Lang"></property>
+		<property name="createtime" type="java.lang.Long"></property>
 		
 	</class>
 

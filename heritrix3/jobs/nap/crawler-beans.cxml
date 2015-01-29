@@ -53,7 +53,7 @@ metadata.description=test
    <props>
     <prop key="seeds.textSource.value">
     # URLS HERE
-    http://www.net-a-porter.com/Shop/Clothing
+    http://www.net-a-porter.com/
 
     </prop>
    </props>

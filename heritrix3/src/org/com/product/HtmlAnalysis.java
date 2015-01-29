@@ -1,19 +1,10 @@
-package org.com.product;
-import java.io.File;
+ package org.com.product;
+
 import java.io.IOException;
-import java.net.HttpCookie;
-import java.util.Random;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
-import net.sf.json.JSON;
-
-import org.archive.io.RecordingInputStream;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.Restrictions;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -25,33 +16,12 @@ public class  HtmlAnalysis{
 
 	private static String cityId = "9051";
 	private static String clientType = "1";
-    private static Session s;
+    
     
 	private static SessionFactory sf=HibernateBase.getSessionFactory();
-   public static void dataPersistence(Object o){
-	    
-		s=sf.openSession();
-    	Transaction tx=s.beginTransaction();
-		s.save(o);
-        tx.commit();
-		sf.close();
-		
-		
-    }
+   
     
-    public static int findByPid(String pid)
-   {
-	   s=sf.openSession();
-	   String hql="from NapProduct as nap where nap.pid=:pid";
-	   Query query=s.createQuery(hql);
-	   query.setString("pid", pid);
-	   int count = query.list().size();
-	   s.close();
-	   return count;
-       
-   }
-    
-public static void getProductInfo(String html,String url) throws IOException, JSONException {
+   public static void getProductInfo(String html,String url) throws IOException, JSONException {
 	// TODO Auto-generated method stub
 	JSONObject jsonObject;
 	Element element;
@@ -85,7 +55,21 @@ public static void getProductInfo(String html,String url) throws IOException, JS
 		//params
 		element=productInfo.getElementById("canshu_box");
 		if (element != null) {
-            productParam=element.text().replaceAll("纠错", " ");
+			elements=element.getElementsByTag("table");
+			Iterator<Element> iterator = elements.iterator();
+			while (iterator.hasNext()) {
+				element = iterator.next();
+				Elements table = element.getElementsByTag("tr");
+				for(int i=0;i<table.size();i++){
+					element = table.get(i);
+					Elements td = element.getElementsByTag("td");
+					if(td.size() != 0){
+						productParam += td.get(0).text()+td.get(1).text()+"#*#";
+					}
+				}
+				
+			}
+			productParam = productParam.substring(0,productParam.length()-3);
 		}
 		//category
 		element = productInfo.getElementById("crumbs");
@@ -119,7 +103,21 @@ public static void getProductInfo(String html,String url) throws IOException, JS
 		//产品参数
 		element=productInfo.getElementById("itemParameter");
 		if (element != null) {
-			productParam=element.text().replaceAll("纠错", " ");
+			elements=element.getElementsByTag("table");
+			Iterator<Element> iterator = elements.iterator();
+			while (iterator.hasNext()) {
+				element = iterator.next();
+				Elements table = element.getElementsByTag("tr");
+				for(int i=0;i<table.size();i++){
+					element = table.get(i);
+					Elements td = element.getElementsByTag("td");
+					if(td.size() != 0){
+						productParam += td.get(0).text()+":"+td.get(1).text()+"#*#";
+					}
+				}
+				
+			}
+			productParam = productParam.substring(0,productParam.length()-3);
 		}
 				
 		//产品分类
@@ -157,7 +155,21 @@ public static void getProductInfo(String html,String url) throws IOException, JS
 		//产品参数
 		element=productInfo.getElementById("itemParameter");
 		if (element != null) {
-			 productParam=element.text().replaceAll("纠错", " ");
+			elements=element.getElementsByTag("table");
+			Iterator<Element> iterator = elements.iterator();
+			while (iterator.hasNext()) {
+				element = iterator.next();
+				Elements table = element.getElementsByTag("tr");
+				for(int i=0;i<table.size();i++){
+					element = table.get(i);
+					Elements td = element.getElementsByTag("td");
+					if(td.size() != 0){
+						productParam += td.get(0).text()+":"+td.get(1).text()+"#*#";
+					}
+				}
+				
+			}
+			productParam = productParam.substring(0,productParam.length()-3);
 		}else{
 			return;
 		}
@@ -214,23 +226,32 @@ public static void getProductInfo(String html,String url) throws IOException, JS
 		return;
 	}
 	
-	SuProduct product=new SuProduct();
-	product.setProductCatagory(productCatagory);
-	product.setPartNumber(partNumber);
-	product.setStoreId(storeId);
-	product.setCatalogId(catalogId);
-	product.setProductLink(url);
-	product.setPromotionPrice(Float.parseFloat(promotionPrice));
-	product.setNetPrice(Float.parseFloat(netPrice));
-	product.setProductImage(imageLink);
-	product.setVendor(vendor);
+	String hql="from SuProduct as sup where sup.partNumber='"+partNumber+"'";
+	boolean flag = true;
+    SuProduct product=(SuProduct)HibernateBase.getById(hql);
+    if(product == null){
+       product = new SuProduct();
+       flag = false; 
+    }
+    product.setProductCatagory(productCatagory);
+    product.setPartNumber(partNumber);
+    product.setStoreId(storeId);
+    product.setCatalogId(catalogId);
+    product.setProductLink(url);
+    product.setPromotionPrice(Float.parseFloat(promotionPrice));
+    product.setNetPrice(Float.parseFloat(netPrice));
+    product.setProductImage(imageLink);
+    product.setVendor(vendor);
 	product.setVendorName(shopName);
 	product.setProductName(productName);
 	product.setProductParam(productParam);
 	product.setCreatetime(System.currentTimeMillis());
-	product.setDisPrice(Float.parseFloat(promotionPrice)-Float.parseFloat(netPrice));
-	dataPersistence(product);
-	
+	product.setDisPrice(Float.parseFloat(netPrice)-Float.parseFloat(promotionPrice));
+	if(flag){
+		HibernateBase.update(product);
+	}else{
+		HibernateBase.save(product);
+	}
 }
 
 public static void getNapProduct(String html,String url) throws IOException{
@@ -267,8 +288,13 @@ public static void getNapProduct(String html,String url) throws IOException{
 			image+=images.get(i).attr("content")+"#";
 		}
 		
-		NapProduct nPro = new NapProduct();
-		
+		String hql="from NapProduct as nap where nap.pid="+pid;
+		boolean flag = true;
+		NapProduct nPro = (NapProduct)HibernateBase.getById(hql);
+		if(nPro == null){
+			nPro = new NapProduct();
+			flag=false;
+		}
 		nPro.setBrand(brand);
 		nPro.setPid(pid);
 		nPro.setName(name);
@@ -278,8 +304,30 @@ public static void getNapProduct(String html,String url) throws IOException{
 		nPro.setUrl(url);
 		nPro.setCategory(category);
 		nPro.setCreatetime(System.currentTimeMillis());
-		dataPersistence(nPro);
+		if(flag){
+			HibernateBase.update(nPro);
+		}else{
+			HibernateBase.save(nPro);
+		}
 }
 
+public static void extractInformation(String html,String url){
+	 try {
+		 
+     if(url.contains("http://www.suning.com/emall/cprd_")||Pattern.compile("http\\://product\\.suning\\.com/\\d{10}/\\d{9}.html.*|http\\://product\\.suning\\.com/\\d{9}.html.*").matcher(url).find()){
+    	 getProductInfo(html, url);
+     }else if(url.contains("http://www.net-a-porter.com/product/")){
+    	 getNapProduct(html,url);
+     }
+		
+	
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (JSONException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} 
+}
 
 }

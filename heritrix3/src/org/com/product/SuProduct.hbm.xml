@@ -17,7 +17,7 @@
 		<property name="storeId"></property>
 		<property name="catalogId"></property>
 		<property name="vendor"></property>
-		<property name="createtime" type="java.lang.Lang"></property>
+		<property name="createtime" type="java.lang.Long"></property>
 	</class>
 
 </hibernate-mapping>

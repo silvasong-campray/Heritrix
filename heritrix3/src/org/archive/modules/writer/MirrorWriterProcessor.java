@@ -363,10 +363,12 @@ public class MirrorWriterProcessor extends Processor {
        UURI uuri = curi.getUURI(); // Current URI.
        String uri=uuri.toString();
      
-       logger.info(uuri.toString());
-       /* if(uri.contains("http://www.suning.com/emall/cprd_")||Pattern.compile("http\\://product\\.suning\\.com/\\d{10}/\\d{9}.html.*|http\\://product\\.suning\\.com/\\d{9}.html.*").matcher(uri).find()){
+       
+       if(uri.contains("http://www.suning.com/emall/cprd_")||Pattern.compile("http\\://product\\.suning\\.com/\\d{10}/\\d{9}.html.*|http\\://product\\.suning\\.com/\\d{9}.html.*").matcher(uri).find()){
         	logger.info(uuri.toString());
-       }*/
+       }else if(uri.contains("http://www.net-a-porter.com/")){
+    	   logger.info(uuri.toString());
+       }
        
     
         // Only http and https schemes are supported.

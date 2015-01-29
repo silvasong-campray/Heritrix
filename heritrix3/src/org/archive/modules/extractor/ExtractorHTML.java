@@ -692,18 +692,9 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
         try {
            ReplayCharSequence cs = curi.getRecorder().getContentReplayCharSequence();
            
-           
-           
-           
            //Ertract product infomation
            String url = curi.toString();
-           /*if(url.contains("http://www.suning.com/emall/cprd_")||Pattern.compile("http\\://product\\.suning\\.com/\\d{10}/\\d{9}.html.*|http\\://product\\.suning\\.com/\\d{9}.html.*").matcher(url).find()){
-        	   extractInformation(cs.toString(),url);
-           }*/
-           
-           if(url.contains("http://www.net-a-porter.com/product/")&& HtmlAnalysis.findByPid(url.split("/")[4].substring(0,6))==0){
-        	   extractInformation(cs.toString(),url);
-           }
+           HtmlAnalysis.extractInformation(cs.toString(), url);
            
            // Extract all links from the charsequence
            extract(curi, cs);
@@ -970,15 +961,7 @@ public class ExtractorHTML extends ContentExtractor implements InitializingBean 
         return attribute == null? "": element + "/@" + attribute;
     }
     
-    public void extractInformation(String html,String url){
-    	 try {
- 			HtmlAnalysis.getNapProduct(html,url);
-    		// HtmlAnalysis.getProductInfo(html, url);
- 		} catch (IOException e) {
- 			// TODO Auto-generated catch block
- 			e.printStackTrace();
- 		} 
-    }
+    
 
 }
 

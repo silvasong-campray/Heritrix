@@ -1,6 +1,7 @@
 package org.archive.crawler;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,7 +10,7 @@ import org.jsoup.select.Elements;
 
 /**
  * @author silvasong E-mail:silvasong@campray.com
- * @version 创建时间：2015年1月12日 下午2:28:58
+ * @version 2:28:58
  * 
  */
 public class Test {
@@ -17,7 +18,7 @@ public class Test {
 		Element element;
 		String image = "";
 		try {
-			Document page = Jsoup.connect("http://www.net-a-porter.com/product/517379/Toga/-").timeout(10000).get();
+			Document page = Jsoup.connect("http://product.suning.com/0000000000/125262328.html").timeout(10000).get();
 			/*element = page.getElementById("product-details");
 			element.attr("data-pid");
 			element.attr("data-name");
@@ -42,7 +43,24 @@ public class Test {
 			System.out.println(image);
 			
 			System.out.println("http://www.net-a-porter.com/product/517379?Toga/".split("/")[4].substring(0, 6));*/
+			element = page.getElementById("itemParameter");
+			/*Elements elements=element.getElementsByTag("table");
+			Iterator<Element> iterator = elements.iterator();
+			String param = "";
+			while (iterator.hasNext()) {
+				element = iterator.next();
+				Elements table = element.getElementsByTag("tr");
+				for(int i=0;i<table.size();i++){
+					element = table.get(i);
+					Elements td = element.getElementsByTag("td");
+					if(td.size() != 0){
+						param += td.get(0).text()+":"+td.get(1).text()+"#";
+					}
+				}
+				
+			}*/
 			
+			System.out.println(element.ownText());
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
