@@ -101,12 +101,7 @@ import com.google.common.primitives.Bytes;
 @SuppressWarnings("unchecked")
 public class MirrorWriterProcessor extends Processor {
 
-	private static String cityId = "9051";
-	private static String clientType = "1";
-    private static Session s;
-    private static SuProduct product;
-	private static SessionFactory sf=HibernateBase.getSessionFactory();
-    private static final long serialVersionUID = 3L;
+	private static final long serialVersionUID = 3L;
     private static final Logger logger =
         Logger.getLogger(MirrorWriterProcessor.class.getName());
 

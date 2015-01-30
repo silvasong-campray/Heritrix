@@ -17,11 +17,7 @@ public class  HtmlAnalysis{
 	private static String cityId = "9051";
 	private static String clientType = "1";
     
-    
-	private static SessionFactory sf=HibernateBase.getSessionFactory();
-   
-    
-   public static void getProductInfo(String html,String url) throws IOException, JSONException {
+    public static void getProductInfo(String html,String url) throws IOException, JSONException {
 	// TODO Auto-generated method stub
 	JSONObject jsonObject;
 	Element element;
@@ -79,7 +75,10 @@ public class  HtmlAnalysis{
 		//images
 		element=productInfo.getElementById("preView_box");  
 		for(int i=0;i<element.select("img").size();i++){
-		imageLink+=element.select("img").get(i).attr("src")+"#";
+		if(!element.select("img").get(i).attr("src").isEmpty()){
+			imageLink+=element.select("img").get(i).attr("src")+"#";
+		}
+		
 		}
 		
 		}else if(Pattern.compile("http\\://product\\.suning\\.com/\\d{10}/\\d{9}.html.*").matcher(url).find()){

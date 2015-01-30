@@ -8,16 +8,19 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.classic.Session;
 
 final public class HibernateBase {
-	private static SessionFactory sf;
+	/*private static SessionFactory sf;
 	public static SessionFactory getSessionFactory(){
 		Configuration cfg=new Configuration();
 		cfg.configure(); 
 		sf=cfg.buildSessionFactory();
 		return sf;
-	   }
+	   }*/
 	
 	public static void save(Object o){
-		Session s=getSessionFactory().openSession();
+		Configuration cfg=new Configuration();
+		cfg.configure(); 
+		SessionFactory sf=cfg.buildSessionFactory();
+		Session s=sf.openSession();
     	Transaction tx=s.beginTransaction();
 		s.save(o);
         tx.commit();
@@ -26,7 +29,10 @@ final public class HibernateBase {
 	}
 	
 	public static void update(Object o){
-		Session s=getSessionFactory().openSession();
+		Configuration cfg=new Configuration();
+		cfg.configure(); 
+		SessionFactory sf=cfg.buildSessionFactory();
+		Session s=sf.openSession();
     	Transaction tx=s.beginTransaction();
 		s.update(o);
         tx.commit();
@@ -36,7 +42,10 @@ final public class HibernateBase {
 	}
 	
 	public static Object getById(String hql){
-		 Session s=getSessionFactory().openSession();
+		 Configuration cfg=new Configuration();
+		 cfg.configure(); 
+		 SessionFactory sf=cfg.buildSessionFactory();
+		 Session s=sf.openSession();
 		 Query query=s.createQuery(hql);
 		 List obj = query.list();
 		 s.close();
