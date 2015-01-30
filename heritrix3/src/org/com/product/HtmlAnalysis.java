@@ -64,7 +64,7 @@ public class  HtmlAnalysis{
 					element = table.get(i);
 					Elements td = element.getElementsByTag("td");
 					if(td.size() != 0){
-						productParam += td.get(0).text()+td.get(1).text()+"#*#";
+						productParam += td.get(0).getElementsByTag("span").text()+td.get(1).text()+"#*#";
 					}
 				}
 				
@@ -112,7 +112,7 @@ public class  HtmlAnalysis{
 					element = table.get(i);
 					Elements td = element.getElementsByTag("td");
 					if(td.size() != 0){
-						productParam += td.get(0).text()+":"+td.get(1).text()+"#*#";
+						productParam += td.get(0).getElementsByTag("span").text()+"："+td.get(1).text()+"#*#";
 					}
 				}
 				
@@ -164,7 +164,7 @@ public class  HtmlAnalysis{
 					element = table.get(i);
 					Elements td = element.getElementsByTag("td");
 					if(td.size() != 0){
-						productParam += td.get(0).text()+":"+td.get(1).text()+"#*#";
+						productParam += td.get(0).getElementsByTag("span").text()+"："+td.get(1).text()+"#*#";
 					}
 				}
 				
